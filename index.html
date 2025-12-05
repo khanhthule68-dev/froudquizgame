@@ -137,7 +137,7 @@ function giveFeedback(choice) {
   if (correct) {
     score += 10;
     scoreEl.textContent = score;
-    feedbackEl.innerHTML = '<div class="fb-correct">Chính xác! Bạn được +10 điểm.</div><div class="fb-advice">Lời khuyên: nguyên tắc "Chậm lại"-"Kiểm tra ngay"-"Không gửi".</div>';
+    feedbackEl.innerHTML = '<div class="fb-correct">Chính xác! Bạn được +10 điểm.</div><div class="fb-advice">Lời khuyên: nguyên tắc "Chậm lại"-"Kiểm tra ngay"-"Dừng lại, không gửi".</div>';
   } else {
     feedbackEl.innerHTML = '<div class="fb-wrong">Chưa đúng — nhưng không sao. Hãy xem gợi ý bên dưới.</div><div class="fb-advice">Gợi ý: Xác minh nguồn tin, gọi điện trực tiếp, kiểm tra tài khoản chính thức.</div>';
   }
@@ -169,7 +169,7 @@ btnNext.addEventListener('click', () => {
       finalMsgEl.textContent = 'Bạn thật tuyệt vời!';
       finalMsgEl.className = 'final-msg good';
     } else {
-      finalMsgEl.textContent = 'Bạn cần tìm hiểu thêm!';
+      finalMsgEl.textContent = 'Khuyên bạn nên tìm hiểu thêm! \n Hãy nhớ về nguyên tắc: "Chậm lại"-"Kiểm tra ngay"-"Dừng lại, không gửi"';
       finalMsgEl.className = 'final-msg bad';
     }
   }
