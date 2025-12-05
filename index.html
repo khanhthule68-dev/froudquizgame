@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Trò chơi nhận biết dấu hiệu lừa đảo</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <h1>Trò chơi nhận biết lừa đảo trên môi trường số</h1>
+    <div id="status" class="status">Câu <span id="qidx">1</span> / <span id="qcount">6</span> • Điểm: <span id="score">0</span></div>
+  </header>
+
+  <main class="card">
+    <div class="left">
+      <img id="scenario-image" src="" alt="Hình minh họa">
+    </div>
+    <div class="right">
+      <div class="chatbox" id="scenario-text"></div>
+
+      <div class="choices">
+        <button id="btn-fraud" class="choice">Lừa đảo</button>
+        <button id="btn-safe" class="choice">An toàn</button>
+      </div>
+
+      <div id="feedback" class="feedback hidden"></div>
+      <div class="next-wrap hidden" id="nextWrap">
+        <button id="btn-next" class="btn-primary">Tiếp tục</button>
+      </div>
+    </div>
+  </main>
+
+  <section id="result" class="result hidden">
+    <h2>Kết quả</h2>
+    <p id="final-score" class="final-score"></p>
+    <p id="final-msg" class="final-msg"></p>
+    <div class="result-actions">
+      <button id="btn-restart" class="btn-success">Chơi lại</button>
+      <button id="btn-export" class="btn-primary">Lưu kết quả</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <small><i>Đây là mini game giúp bạn nhận biết tốt hơn các tình huống lừa đảo trên mạng.<br>
+				Tác giả: Lê Khánh Thư - Trường TH&THCS Vĩnh Hoà </i></small>
+  </footer>
+</div>
+
+<script>
+// Data: scenarios (2 from your PDF + placeholders). Replace or extend as needed.
+const scenarios = [
+  {
+    id:1,
+    text: `Bạn vừa nhận được  tin nhắn qua một ứng dụng nhắn tin từ một tài khoản có tên trùng với tên em gái bạn trong tình trạng rất gấp gáp `,
+    answer: "Lừa đảo",
+    image: "https://i.postimg.cc/PJLPDk0S/hoi-thoai-1.png"
+  },
+  {
+    id:2,
+    text: `Bạn vừa nhận được tin nhắn thông báo trúng thưởng...`,
+    answer: "Lừa đảo",
+    image: "https://i.postimg.cc/MGXn43y3/hoi-thoai-2.png"
+  },
+  { id:3, 
+	text: "Bạn nhận được tin nhắn từ một người tự xung là cơ quan Bảo hiểm xã hội Việt Nam", 
+	answer:"Lừa đảo", 
+	image:"https://i.postimg.cc/8cxJBRJD/hoi-thoai-3.png" },
+  { id:4, 
+	text: "Bạn nhận được thông báo tài khoản ngân hàng đang gặp sự cố và yêu cầu đăng nhập theo đường link", 
+	answer:"Lừa đảo", 
+	image:"https://i.postimg.cc/Df6xd8w8/Tinh-huong4.png" },
+  { id:5, 
+	text: "Bạn nhận email từ trường yêu cầu cập nhật một số thông tin khảo sát vào form theo đường link lạ.", 
+	answer:"An toàn", 
+	image:"https://i.postimg.cc/HWbgp0zf/tinhhuong5.png" },
+  { id:6, 
+	text: "Một người bạn gửi link rút gọn và bảo bạn click để xem ảnh, nhưng đường link trông rất lạ.", 
+	answer:"Lừa đảo", 
+	image:"https://i.postimg.cc/mrZD9XXH/tinhhuong6.png" },
+  { id:7, 
+	text: "Bạn nhận được tin nhắn thông qua ứng dụng của công ty điện lực:", 
+	answer:"An toàn", 
+	image:"https://i.postimg.cc/hGRvG4xM/EVN-Canh-Bao-Final.png" },
+  { id:8, 
+	text: "Bạn nhận được cuộc gọi video, trong máy hiện lên hình ảnh anh công an với giọng gắt gỏng:\n Người gọi: Anh có phải là Nguyễn Văn A, số điện thoại 023xxxxxx, trú tại thôn Hiền Dũng xã VH không?\nBạn: Vâng đúng là tôi đây ạ\nNgười gọi: Chúng tôi bên Bộ công an, thông báo cho anh là anh đang tham gia và một đường dây vận chuyển hàng cấm vài ngày trước\nBạn: Dạ hôm rồi em có nhận một món hàng nhưng không do em đặt, em tưởng người ta giao nhầm\nNgười gọi: như vậy là anh đã vi phạm pháp luật nghiêm trọng. Bây giờ để chúng tôi bỏ qua vi phạm thì chỉ còn cách là anh phải chuyển vào số tài khoản 0369XXXXXX số tiền là 5 triệu đồng…", 
+	answer:"Lừa đảo", 
+	image:"https://i.postimg.cc/jjhxdHR5/Tinh-huong-5.png" },
+  
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+const qcountEl = document.getElementById('qcount');
+const qidxEl = document.getElementById('qidx');
+const scoreEl = document.getElementById('score');
+const imgEl = document.getElementById('scenario-image');
+const textEl = document.getElementById('scenario-text');
+const btnFraud = document.getElementById('btn-fraud');
+const btnSafe = document.getElementById('btn-safe');
+const feedbackEl = document.getElementById('feedback');
+const nextWrap = document.getElementById('nextWrap');
+const btnNext = document.getElementById('btn-next');
+const resultSection = document.getElementById('result');
+const finalScoreEl = document.getElementById('final-score');
+const finalMsgEl = document.getElementById('final-msg');
+const btnRestart = document.getElementById('btn-restart');
+const btnExport = document.getElementById('btn-export');
+
+qcountEl.textContent = scenarios.length;
+
+function render() {
+  const s = scenarios[current];
+  qidxEl.textContent = current + 1;
+  scoreEl.textContent = score;
+  imgEl.src = s.image;
+  imgEl.alt = 'Hình minh họa ' + (current+1);
+  textEl.textContent = s.text;
+  feedbackEl.classList.add('hidden');
+  nextWrap.classList.add('hidden');
+  answered = false;
+  btnFraud.disabled = false;
+  btnSafe.disabled = false;
+  btnFraud.classList.remove('selected','correct','wrong');
+  btnSafe.classList.remove('selected','correct','wrong');
+}
+
+function giveFeedback(choice) {
+  const s = scenarios[current];
+  answered = true;
+  btnFraud.disabled = true;
+  btnSafe.disabled = true;
+  const correct = choice === s.answer;
+  if (correct) {
+    score += 10;
+    scoreEl.textContent = score;
+    feedbackEl.innerHTML = '<div class="fb-correct">Chính xác! Bạn được +10 điểm.</div><div class="fb-advice">Lời khuyên: nguyên tắc "Chậm lại"-"Kiểm tra ngay"-"Không gửi".</div>';
+  } else {
+    feedbackEl.innerHTML = '<div class="fb-wrong">Chưa đúng — nhưng không sao. Hãy xem gợi ý bên dưới.</div><div class="fb-advice">Gợi ý: Xác minh nguồn tin, gọi điện trực tiếp, kiểm tra tài khoản chính thức.</div>';
+  }
+  feedbackEl.classList.remove('hidden');
+  nextWrap.classList.remove('hidden');
+}
+
+btnFraud.addEventListener('click', () => {
+  if (answered) return;
+  btnFraud.classList.add('selected');
+  giveFeedback('Lừa đảo');
+});
+btnSafe.addEventListener('click', () => {
+  if (answered) return;
+  btnSafe.classList.add('selected');
+  giveFeedback('An toàn');
+});
+
+btnNext.addEventListener('click', () => {
+  if (current < scenarios.length - 1) {
+    current++;
+    render();
+  } else {
+    // show result
+    document.querySelector('main.card').classList.add('hidden');
+    resultSection.classList.remove('hidden');
+    finalScoreEl.textContent = score + ' / ' + (scenarios.length*10) + ' điểm';
+    if (score === scenarios.length*10) {
+      finalMsgEl.textContent = 'Bạn thật tuyệt vời!';
+      finalMsgEl.className = 'final-msg good';
+    } else {
+      finalMsgEl.textContent = 'Bạn cần tìm hiểu thêm!';
+      finalMsgEl.className = 'final-msg bad';
+    }
+  }
+});
+
+btnRestart.addEventListener('click', () => {
+  current = 0; score = 0;
+  document.querySelector('main.card').classList.remove('hidden');
+  resultSection.classList.add('hidden');
+  render();
+});
+
+// Download the ZIP we will include in the package (this file itself) - placeholder: the ZIP will be provided separately
+btnExport.addEventListener('click', () => {
+  alert('File ZIP sẽ được tải xuống (nếu trình duyệt cho phép)');
+});
+
+// initial render
+render();
+</script>
+</body>
+</html>

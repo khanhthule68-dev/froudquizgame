@@ -1,0 +1,42 @@
+/* styles.css - colorful, school-friendly UI */
+:root{
+  --bg1:#7c3aed;
+  --bg2:#ec4899;
+  --card:#ffffff;
+  --muted:#6b7280;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;}
+.page{min-height:100vh;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;}
+.header{width:100%;max-width:980px;color:#fff;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+.header h1{margin:0;font-size:20px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.card{width:100%;max-width:980px;background:rgba(255,255,255,0.95);border-radius:14px;box-shadow:0 20px 40px rgba(0,0,0,0.12);display:flex;padding:20px;gap:20px;align-items:flex-start;}
+.left{flex:0 0 55%;border-radius:12px;overflow:hidden;height:420px;}
+.left img{width:100%;height:100%;object-fit:cover;display:block;}
+.right{flex:1;display:flex;flex-direction:column;}
+.chatbox{background:#f3f4f6;padding:14px;border-radius:10px;min-height:160px;font-size:15px;color:#111;white-space:pre-wrap;}
+.choices{display:flex;gap:12px;margin-top:12px;}
+.choice{flex:1;padding:12px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.06);color:#fff}
+.choice:hover{transform:translateY(-2px);transition:transform .12s}
+.choice.selected{opacity:0.9}
+.choice.correct{background:#10b981}
+.choice.wrong{background:#ef4444}
+#btn-fraud{background:#f59e0b}
+#btn-safe{background:#3b82f6}
+.feedback{margin-top:14px;padding:12px;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.06);}
+.fb-correct{color:#047857;font-weight:800}
+.fb-wrong{color:#b91c1c;font-weight:800}
+.fb-advice{margin-top:6px;color:#334155}
+.next-wrap{margin-top:10px;display:flex;justify-content:flex-end}
+.btn-primary{background:#6d28d9;color:#fff;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:800}
+.btn-success{background:#10b981;color:#fff;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:800}
+.hidden{display:none}
+.result{width:100%;max-width:720px;background:#fff;padding:28px;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.12);margin-top:18px}
+.final-score{font-size:20px;font-weight:800}
+.final-msg.good{color:#065f46;font-weight:800;font-size:18px}
+.final-msg.bad{color:#7f1d1d;font-weight:800;font-size:18px}
+.footer{margin-top:12px;color:#fff;text-align:center}
+@media (max-width:880px){
+  .card{flex-direction:column}
+  .left{width:100%;height:220px}
+}
