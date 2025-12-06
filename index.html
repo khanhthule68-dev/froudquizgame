@@ -141,9 +141,9 @@ function giveFeedback(choice) {
   if (correct) {
     score += 10;
     scoreEl.textContent = score;
-    feedbackEl.innerHTML = '<div class="fb-correct">Chính xác! Bạn được +10 điểm.</div><div class="fb-advice">Lời khuyên: nguyên tắc "Chậm lại"-"Kiểm tra ngay"-"Dừng lại, không gửi".</div>';
+    feedbackEl.innerHTML = '<div class="fb-correct">Chính xác! Bạn được +10 điểm.<audio autoplay  > <source src="sound1.mp3" type="audio/mpeg"> </audio></div><div class="fb-advice">Lời khuyên: nguyên tắc "Chậm lại"-"Kiểm tra ngay"-"Dừng lại, không gửi".</div>';
   } else {
-    feedbackEl.innerHTML = '<div class="fb-wrong">Chưa đúng — nhưng không sao. Hãy xem gợi ý bên dưới.</div><div class="fb-advice">Gợi ý: Xác minh nguồn tin, gọi điện trực tiếp, kiểm tra tài khoản chính thức.</div>';
+    feedbackEl.innerHTML = '<div class="fb-wrong">Chưa đúng — nhưng không sao. Hãy xem gợi ý bên dưới.<audio autoplay  > <source src="sound2.mp3" type="audio/mpeg"> </audio></div><div class="fb-advice">Gợi ý: Xác minh nguồn tin, gọi điện trực tiếp, kiểm tra tài khoản chính thức.</div>';
   }
   feedbackEl.classList.remove('hidden');
   nextWrap.classList.remove('hidden');
